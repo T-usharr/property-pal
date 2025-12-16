@@ -39,16 +39,25 @@ import { toast } from 'sonner';
 const PropertyDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getProperty, updateProperty, deleteProperty, duplicateProperty } = useProperties();
+  const { getProperty, updateProperty, deleteProperty, duplicateProperty, isLoading } = useProperties();
   const [activeTab, setActiveTab] = useState<'checklist' | 'notes' | 'tags'>('checklist');
 
   const property = getProperty(id || '');
 
   useEffect(() => {
-    if (!property && id) {
+    // Only redirect after loading is complete and property still not found
+    if (!isLoading && !property && id) {
       navigate('/');
     }
-  }, [property, id, navigate]);
+  }, [property, id, navigate, isLoading]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (!property) {
     return null;
@@ -94,8 +103,8 @@ const PropertyDetail = () => {
     navigate('/');
   };
 
-  const handleDuplicate = () => {
-    const newId = duplicateProperty(property.id);
+  const handleDuplicate = async () => {
+    const newId = await duplicateProperty(property.id);
     if (newId) {
       toast.success('Property duplicated');
       navigate(`/property/${newId}`);
