@@ -1,32 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Property } from '@/types/property';
 import { defaultChecklist } from '@/data/defaultChecklist';
 
 const STORAGE_KEY = 'property-evaluator-data';
 
+// Helper to save synchronously
+const saveToStorage = (data: Property[]) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+};
+
+// Helper to load from storage
+const loadFromStorage = (): Property[] => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.error('Failed to parse stored properties:', e);
+    }
+  }
+  return [];
+};
+
 export const useProperties = () => {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [properties, setProperties] = useState<Property[]>(() => loadFromStorage());
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Sync to localStorage whenever properties change
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setProperties(JSON.parse(stored));
-      } catch (e) {
-        console.error('Failed to parse stored properties:', e);
-      }
-    }
-    setIsLoading(false);
-  }, []);
+    saveToStorage(properties);
+  }, [properties]);
 
-  useEffect(() => {
-    if (!isLoading) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(properties));
-    }
-  }, [properties, isLoading]);
-
-  const addProperty = (name: string, address: string, builderName: string) => {
+  const addProperty = useCallback((name: string, address: string, builderName: string) => {
     const newProperty: Property = {
       id: crypto.randomUUID(),
       name,
@@ -40,30 +45,47 @@ export const useProperties = () => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    setProperties((prev) => [newProperty, ...prev]);
+    
+    // Update state
+    setProperties((prev) => {
+      const updated = [newProperty, ...prev];
+      // Also save synchronously to ensure it's available immediately
+      saveToStorage(updated);
+      return updated;
+    });
+    
     return newProperty.id;
-  };
+  }, []);
 
-  const updateProperty = (id: string, updates: Partial<Property>) => {
-    setProperties((prev) =>
-      prev.map((p) =>
+  const updateProperty = useCallback((id: string, updates: Partial<Property>) => {
+    setProperties((prev) => {
+      const updated = prev.map((p) =>
         p.id === id
           ? { ...p, ...updates, updatedAt: new Date().toISOString() }
           : p
-      )
-    );
-  };
+      );
+      saveToStorage(updated);
+      return updated;
+    });
+  }, []);
 
-  const deleteProperty = (id: string) => {
-    setProperties((prev) => prev.filter((p) => p.id !== id));
-  };
+  const deleteProperty = useCallback((id: string) => {
+    setProperties((prev) => {
+      const updated = prev.filter((p) => p.id !== id);
+      saveToStorage(updated);
+      return updated;
+    });
+  }, []);
 
-  const getProperty = (id: string) => {
-    return properties.find((p) => p.id === id);
-  };
+  const getProperty = useCallback((id: string) => {
+    // Always read fresh from localStorage to get latest data
+    const freshData = loadFromStorage();
+    return freshData.find((p) => p.id === id);
+  }, []);
 
-  const duplicateProperty = (id: string) => {
-    const property = getProperty(id);
+  const duplicateProperty = useCallback((id: string) => {
+    const freshData = loadFromStorage();
+    const property = freshData.find((p) => p.id === id);
     if (!property) return null;
     
     const newProperty: Property = {
@@ -73,9 +95,20 @@ export const useProperties = () => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    setProperties((prev) => [newProperty, ...prev]);
+    
+    setProperties((prev) => {
+      const updated = [newProperty, ...prev];
+      saveToStorage(updated);
+      return updated;
+    });
+    
     return newProperty.id;
-  };
+  }, []);
+
+  // Refresh properties from storage (useful after navigation)
+  const refreshProperties = useCallback(() => {
+    setProperties(loadFromStorage());
+  }, []);
 
   return {
     properties,
@@ -85,5 +118,6 @@ export const useProperties = () => {
     deleteProperty,
     getProperty,
     duplicateProperty,
+    refreshProperties,
   };
 };
