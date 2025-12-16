@@ -1,0 +1,9 @@
+{
+  "appId": "app.lovable.42a326028f7244628cec73d0f32ac839",
+  "appName": "FlatFinder",
+  "webDir": "dist",
+  "server": {
+    "url": "https://42a32602-8f72-4462-8cec-73d0f32ac839.lovableproject.com?forceHideBadge=true",
+    "cleartext": true
+  }
+}
