@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useProperties } from '@/hooks/useProperties';
+import { useProperties } from '@/contexts/PropertiesContext';
 import { useAuth } from '@/hooks/useAuth';
 import { PropertyCard } from '@/components/PropertyCard';
 import { AddPropertyDialog } from '@/components/AddPropertyDialog';

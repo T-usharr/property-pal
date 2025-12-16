@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useProperties } from '@/hooks/useProperties';
+import { useProperties } from '@/contexts/PropertiesContext';
 import { ChecklistCategory } from '@/components/ChecklistCategory';
 import { TagSelector } from '@/components/TagSelector';
 import { ReportGenerator } from '@/components/ReportGenerator';
