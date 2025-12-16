@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { PropertiesProvider } from "@/contexts/PropertiesContext";
 import Index from "./pages/Index";
 import PropertyDetail from "./pages/PropertyDetail";
 import Auth from "./pages/Auth";
@@ -55,34 +56,36 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Index />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/property/:id"
-            element={
-              <ProtectedRoute>
-                <PropertyDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/auth"
-            element={
-              <AuthRoute>
-                <Auth />
-              </AuthRoute>
-            }
-          />
-          <Route path="/install" element={<Install />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <PropertiesProvider>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/property/:id"
+              element={
+                <ProtectedRoute>
+                  <PropertyDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/auth"
+              element={
+                <AuthRoute>
+                  <Auth />
+                </AuthRoute>
+              }
+            />
+            <Route path="/install" element={<Install />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </PropertiesProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
