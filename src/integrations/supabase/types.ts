@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      properties: {
+        Row: {
+          address: string | null
+          builder_name: string | null
+          checklist: Json
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          rating: number | null
+          tags: string[] | null
+          updated_at: string
+          user_id: string
+          visit_date: string
+        }
+        Insert: {
+          address?: string | null
+          builder_name?: string | null
+          checklist?: Json
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          rating?: number | null
+          tags?: string[] | null
+          updated_at?: string
+          user_id: string
+          visit_date?: string
+        }
+        Update: {
+          address?: string | null
+          builder_name?: string | null
+          checklist?: Json
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          rating?: number | null
+          tags?: string[] | null
+          updated_at?: string
+          user_id?: string
+          visit_date?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
