@@ -157,10 +157,7 @@ const Index = () => {
                 key={property.id}
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                <PropertyCard
-                  property={property}
-                  onClick={() => navigate(`/property/${property.id}`)}
-                />
+                <PropertyCard property={property} />
               </div>
             ))}
           </div>

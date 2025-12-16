@@ -4,13 +4,13 @@ import { Card } from '@/components/ui/card';
 import { Star, MapPin, Calendar, ChevronRight } from 'lucide-react';
 import { defaultTags } from '@/data/defaultChecklist';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 interface PropertyCardProps {
   property: Property;
-  onClick: () => void;
 }
 
-export const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
+export const PropertyCard = ({ property }: PropertyCardProps) => {
   const completedItems = property.checklist.reduce((acc, cat) => {
     return acc + cat.items.filter((item) => {
       if (item.type === 'checkbox') return item.value === true;
@@ -26,10 +26,8 @@ export const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
   const progress = Math.round((completedItems / totalItems) * 100);
 
   return (
-    <Card
-      onClick={onClick}
-      className="p-4 cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border-border/50 bg-card animate-slide-up"
-    >
+    <Link to={`/property/${property.id}`}>
+      <Card className="p-4 cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border-border/50 bg-card animate-slide-up">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <h3 className="font-display font-semibold text-lg text-card-foreground truncate">
@@ -107,6 +105,7 @@ export const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
           </div>
         </div>
       </div>
-    </Card>
+      </Card>
+    </Link>
   );
 };
