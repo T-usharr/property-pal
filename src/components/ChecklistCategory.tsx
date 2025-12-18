@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { ChecklistCategory as ChecklistCategoryType, ChecklistItem } from '@/types/property';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
+import { DebouncedInput } from '@/components/ui/debounced-input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+import { DebouncedTextarea } from '@/components/ui/debounced-textarea';
 import { ChevronDown, ChevronUp, AlertTriangle, Star, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -40,22 +40,24 @@ export const ChecklistCategory = ({ category, onUpdate }: ChecklistCategoryProps
 
       case 'text':
         return (
-          <Input
+          <DebouncedInput
             value={(item.value as string) || ''}
-            onChange={(e) => onUpdate(category.id, item.id, e.target.value)}
+            onChange={(value) => onUpdate(category.id, item.id, value)}
             placeholder="Enter value..."
             className="h-9 text-sm bg-background"
+            debounceMs={400}
           />
         );
 
       case 'number':
         return (
-          <Input
+          <DebouncedInput
             type="number"
             value={item.value !== null ? String(item.value) : ''}
-            onChange={(e) => onUpdate(category.id, item.id, e.target.value ? parseFloat(e.target.value) : null)}
+            onChange={(value) => onUpdate(category.id, item.id, value ? parseFloat(value) : null)}
             placeholder="0"
             className="h-9 text-sm w-24 bg-background"
+            debounceMs={400}
           />
         );
 
@@ -172,11 +174,12 @@ export const ChecklistCategory = ({ category, onUpdate }: ChecklistCategoryProps
                 </div>
               </div>
               {activeNoteItem === item.id && (
-                <Textarea
+                <DebouncedTextarea
                   value={item.note || ''}
-                  onChange={(e) => onUpdate(category.id, item.id, item.value, e.target.value)}
+                  onChange={(value) => onUpdate(category.id, item.id, item.value, value)}
                   placeholder="Add a note..."
                   className="text-sm min-h-[80px] bg-background"
+                  debounceMs={400}
                 />
               )}
             </div>
