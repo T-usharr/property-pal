@@ -132,7 +132,7 @@ const PropertyDetail = () => {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-[calc(6rem+env(safe-area-inset-bottom))]">
       {/* Header */}
       <header className="gradient-hero text-primary-foreground p-4 pb-6 sticky top-0 z-20">
         <div className="flex items-center gap-3 mb-4">
@@ -295,7 +295,7 @@ const PropertyDetail = () => {
       </main>
 
       {/* Bottom Actions */}
-      <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4 flex gap-3">
+      <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] flex gap-3">
         <ReportGenerator property={property} />
         
         <Button
