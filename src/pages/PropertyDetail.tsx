@@ -5,8 +5,9 @@ import { ChecklistCategory } from '@/components/ChecklistCategory';
 import { TagSelector } from '@/components/TagSelector';
 import { ReportGenerator } from '@/components/ReportGenerator';
 import { Button } from '@/components/ui/button';
+import { DebouncedInput } from '@/components/ui/debounced-input';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { DebouncedTextarea } from '@/components/ui/debounced-textarea';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import {
@@ -142,10 +143,11 @@ const PropertyDetail = () => {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex-1 min-w-0">
-            <Input
+            <DebouncedInput
               value={property.name}
-              onChange={(e) => updateProperty(property.id, { name: e.target.value })}
+              onChange={(value) => updateProperty(property.id, { name: value })}
               className="bg-transparent border-none text-lg font-display font-bold text-primary-foreground p-0 h-auto focus-visible:ring-0"
+              debounceMs={400}
             />
           </div>
         </div>
@@ -238,19 +240,21 @@ const PropertyDetail = () => {
           <div className="space-y-4 animate-fade-in">
             <Card className="p-4">
               <Label className="text-sm font-medium mb-2 block">Property Address</Label>
-              <Input
+              <DebouncedInput
                 value={property.address}
-                onChange={(e) => updateProperty(property.id, { address: e.target.value })}
+                onChange={(value) => updateProperty(property.id, { address: value })}
                 placeholder="Enter full address..."
                 className="mb-4"
+                debounceMs={400}
               />
 
               <Label className="text-sm font-medium mb-2 block">Builder Name</Label>
-              <Input
+              <DebouncedInput
                 value={property.builderName}
-                onChange={(e) => updateProperty(property.id, { builderName: e.target.value })}
+                onChange={(value) => updateProperty(property.id, { builderName: value })}
                 placeholder="Enter builder/developer name..."
                 className="mb-4"
+                debounceMs={400}
               />
 
               <Label className="text-sm font-medium mb-2 block">Visit Date</Label>
@@ -266,11 +270,12 @@ const PropertyDetail = () => {
                 <StickyNote className="w-4 h-4 inline mr-2" />
                 Custom Notes & Observations
               </Label>
-              <Textarea
+              <DebouncedTextarea
                 value={property.notes}
-                onChange={(e) => updateProperty(property.id, { notes: e.target.value })}
+                onChange={(value) => updateProperty(property.id, { notes: value })}
                 placeholder="Add your personal observations, concerns, questions, or anything else you want to remember about this property..."
                 className="min-h-[200px]"
+                debounceMs={400}
               />
             </Card>
           </div>
